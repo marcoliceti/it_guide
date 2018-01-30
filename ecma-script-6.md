@@ -295,8 +295,8 @@ Esempio:
 
 ```
 class LavoratoriHelper {
-  static colleghi(p1, p2) {
-    return p1.mestiere === p2.mestiere;
+  static colleghi(l1, l2) {
+    return l1.mestiere === l2.mestiere;
   }
 }
 
@@ -525,12 +525,12 @@ paperi.add('Qua');
 console.log(paperi.size); // 3
 for (let papero of paperi) console.log(papero);
 
-const colori_squadre = new Map();
-colori_squadre.set('inter', [ 'nero', 'azzurro' ]);
-colori_squadre.set('roma', [ 'giallo', 'rosso' ]);
-for (let coppia of colori_squadre) {
+const coloriSquadre = new Map();
+coloriSquadre.set('inter', 'nerazzurro' ]);
+coloriSquadre.set('roma', 'giallorosso' ]);
+for (let coppia of coloriSquadre) {
   const squadra = coppia[0];
-  const colori = coppia[1];
+  const colore = coppia[1];
   // ...
 }
 ```
