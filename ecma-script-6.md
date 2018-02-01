@@ -212,6 +212,7 @@ Alcune note terminologiche:
 
 Le _generator functions_ (o _generators_) sono funzioni che:
 
+* sono contrassegnate da un `*`
 * possono sospendere temporeaneamente la propria esecuzione tramite parola
 chiave `yield`
 * a ogni sospensione, possono "emettere" un valore affiancandolo alla parola
@@ -224,7 +225,8 @@ dell'iterator
 * a ogni invocazione di `next`, la proprietà `value` riporta il valore emesso
 dall'ultimo utilizzo della parola chiave `yield`
 
-Sono quindi il costrutto ideale per la definizione di oggetti iterabili:
+Le generator functions sono il costrutto ideale per la definizione di oggetti
+iterabili:
 
 ```
 const numeriCasuali = {
@@ -272,16 +274,18 @@ Esempio:
 ```
 class Persona {
   get nome() {
+    console.log('Accesso in lettura a nome');
     return this._nome;
   }
   set nome(n) {
+    console.log('Accesso in scrittura a nome');
     this._nome = n;
   }
 }
 
 const marco = new Persona();
-marco.nome = 'Marco';
-console.log(marco.nome); // 'Marco'
+marco.nome = 'Marco'; // 'Accesso in scrittura a nome'
+console.log(marco.nome); // 'Accesso lettura a nome', 'Marco'
 ```
 
 **Nota:** Prefissare le variabili d'istanza con un underscore è solo una
@@ -294,15 +298,15 @@ sempre accessibili).
 Esempio:
 
 ```
-class LavoratoriHelper {
-  static colleghi(l1, l2) {
-    return l1.mestiere === l2.mestiere;
+class PersoneHelper {
+  static omonimi(p1, p2) {
+    return p1.nome === p2.nome;
   }
 }
 
-const marco = new Lavoratore('Marco', 'sviluppatore');
-const fabio = new Lavoratore('Fabio', 'sviluppatore');
-LavoratoriHelper.colleghi(marco, fabio); // true
+const marco = new Persona('Marco');
+const fabio = new Persona('Fabio');
+PersoneHelper.omonimi(marco, fabio); // false
 ```
 
 ### Ereditarietà e overriding
@@ -319,6 +323,7 @@ class Persona {
   }
 }
 
+// Ereditarietà
 class Lavoratore extends Persona {
   constructor(nome, mestiere) {
     super(nome);
@@ -526,8 +531,8 @@ console.log(paperi.size); // 3
 for (let papero of paperi) console.log(papero);
 
 const coloriSquadre = new Map();
-coloriSquadre.set('inter', 'nerazzurro' ]);
-coloriSquadre.set('roma', 'giallorosso' ]);
+coloriSquadre.set('inter', 'nerazzurro');
+coloriSquadre.set('roma', 'giallorosso');
 for (let coppia of coloriSquadre) {
   const squadra = coppia[0];
   const colore = coppia[1];
