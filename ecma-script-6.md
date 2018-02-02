@@ -4,19 +4,14 @@
 
 Lo scopo di questa guida è quello di presentare in maniera chiara e breve alcune
 delle funzionalità più importanti introdotte con ECMAScript 6. In particolare il
-focus è sulle funzionalità di uso più comune e non saranno invece trattate
-quelle comunque importanti ma più pertinenti allo sviluppo di librerie e
-framework.
+focus è sulle funzionalità di uso più comune.
 
 Questa guida è inoltre rivolta a lettori che abbiano già esperienza di sviluppo
-JavaScript. La parte sulle classi presuppone inoltre una conoscenza basilare
-della programmazione orientata agli oggetti basata su classi (costruttori,
-ereditarietà, overriding, metodi statici, ecc.). La parte sulle _promesse_,
-infine, presuppone appunto la conoscenza di tale pattern.
+JavaScript.
 
-La maggioranza delle funzionalità di ECMAScript 6 possono già essere provate
-sulla maggioranza dei browser (o su [Node](https://nodejs.org/)) in ultima
-versione. In alternativa è possibile utilizzare [Babel](https://babeljs.io/).
+Quasi tutte le funzionalità di ECMAScript 6 possono già essere provate sulla
+maggioranza dei browser (o su [Node](https://nodejs.org/)) in ultima versione.
+In alternativa è possibile utilizzare [Babel](https://babeljs.io/).
 
 ## Indice
 
@@ -39,45 +34,44 @@ versione. In alternativa è possibile utilizzare [Babel](https://babeljs.io/).
 
 ## Block scope
 
-Oltre che con `var` è ora possibile dichiarare variabili con `let` e `const`. In
-entrambi i casi si otterrà una variabile visibile solo nel blocco di
-dichiarazione. Nel caso di `const`, inoltre:
-
-* è obbligatorio inizializzare subito la variabile
-* non sarà possibile cambiarne il valore in seguito
-
-Esempi:
+Con ECMAScript 6 è possibile definire variabili block scoped usando `let` invece
+di `var`:
 
 ```
-let x = 7;
-x = 8; // OK
-
-const y; // Errore (non inizializzata)
-
-const z = 9; // OK
-z = 10; // Errore (già inizializzata)
-
-if (false) {
-  let h = 11;
-  const j = 12;
-} else {
-  console.log(h); // Errore (dichiarata in un altro blocco)
-  console.log(j); // Errore (dichiarata in un altro blocco)
+if (true) {
+  let x = 7;
+  console.log(x); // 7
 }
+console.log(x); // Errore
 ```
 
-Un'ulteriore interessante caratteristica delle variabili `let` e `const` e che
-sono immuni
-all'_[hoisting](https://developer.mozilla.org/en-US/docs/Glossary/Hoisting=)_.
+È possibile definire variabili block scoped anche con `const`, che in aggiunta
+previene le assegnazioni multiple:
 
-È bene infine ricordare che assegnare ad una variabile dichiarata con `const` il
-riferimento ad un oggetto non è affatto sufficiente a rendere tale oggetto
-immutabile:
+```
+const x = 7;
+x = 8; // Errore
+```
+
+Le variabili `const` devono essere inizializzate:
+
+```
+const x; // Errore
+```
+
+Remember that assigning an object to a `const` variable doesn't magically make
+it immutable:
+
+È bene ricordare che assegnare un oggetto a una variabile `const` non rende
+l'oggetto magicamente immutabile:
 
 ```
 const marco = { nome: 'Marco' };
-marco.nome = 'Mario';
+marco.nome = 'Mario'; // Ops
 ```
+
+**Note:** `let` and `const` sono immuni
+all'[hoisting](https://developer.mozilla.org/en-US/docs/Glossary/Hoisting=).
 
 ## Template strings
 
@@ -98,8 +92,8 @@ ci lascia lo
 zampino`;
 ```
 
-La peculiarità più importante, però, è la possibilità di _interpolare_ dei
-valori all'interno della stringa:
+La peculiarità più importante, però, è la possibilità di interpolare dei valori
+all'interno della stringa:
 
 ```
 const nome = 'Marco';
@@ -130,9 +124,9 @@ In pratica:
 corpo della funzione
 * nel caso di funzioni composte da una sola istruzione, il `return` è implicito
 
-Da notare inoltre che le funzioni definite in questo modo _catturano_ `this` dal
-contesto in cui vengono definite, come se fosse una qualunque altra variabile e
-non occorre il classico `var self = this;`.
+Da notare inoltre che le funzioni definite in questo modo catturano `this` dal
+contesto in cui vengono definite, come se fosse una qualunque altra variabile, e
+non occorre dunque il classico `var self = this;`.
 
 **Nota:** Lo stesso vale per la variabile speciale `arguments`.
 
@@ -205,12 +199,12 @@ for (let x of numeriCasuali) {
 
 Alcune note terminologiche:
 
-* oggetti iterabili in questa maniera vengono detti _iterable_
-* _iterator_ è invece il nome dell'oggetto che implementa il metodo `next`
+* oggetti iterabili in questa maniera vengono detti "iterable"
+* "iterator" è invece il nome dell'oggetto che implementa il metodo `next`
 
 ## Generators
 
-Le _generator functions_ (o _generators_) sono funzioni che:
+Le generator functions (o generators) sono funzioni che:
 
 * sono contrassegnate da un `*`
 * possono sospendere temporeaneamente la propria esecuzione tramite parola
@@ -225,8 +219,8 @@ dell'iterator
 * a ogni invocazione di `next`, la proprietà `value` riporta il valore emesso
 dall'ultimo utilizzo della parola chiave `yield`
 
-Le generator functions sono il costrutto ideale per la definizione di oggetti
-iterabili:
+Le generator functions sono il costrutto ideale per l'implementazione di factory
+di iterator:
 
 ```
 const numeriCasuali = {
@@ -265,7 +259,7 @@ marco.diQualcosa(); // 'Qualcosa!'
 ### Getter e setter
 
 Mentre negli altri linguaggi i getter e i setter sono metodi pubblici per
-l'accesso indiretto a membri privati (_incapsulamento_), in JavaScript sono
+l'accesso indiretto a membri privati (incapsulamento), in JavaScript sono
 semplicemente dei metodi che possono essere invocati tramite la sintassi
 normalmente utilizzata per l'accesso a proprietà.
 
@@ -291,7 +285,7 @@ console.log(marco.nome); // 'Accesso lettura a nome', 'Marco'
 **Nota:** Prefissare le variabili d'istanza con un underscore è solo una
 convenzione per indicare che non andrebbero accedute direttamente e non ha alcun
 effetto sulla loro accessibilità (le proprietà di un oggetto JavaScript sono
-sempre accessibili).
+sempre accessibili e l'incapsulamento non può essere garantito).
 
 ### Metodi statici
 
@@ -344,9 +338,13 @@ console.log(marco instanceof Lavoratore); // true
 ## Promesse
 
 Le promesse sono un modo particolarmente agevole di interagire con API
-asincrone. L'argomento è abbastanza ampio da meritare di essere trattato
-separatamente. Per quanto riguarda questa guida, il punto è che ECMAScript 6
-introduce il suppporto nativo alle promesse tramite il costruttore `Promise`.
+asincrone.
+
+**Nota:** L'argomento è abbastanza ampio da meritare di essere trattato
+separatamente.
+
+ECMAScript 6 introduce il suppporto nativo alle promesse tramite il costruttore
+`Promise`.
 
 Esempio:
 
@@ -364,9 +362,9 @@ function miaFunzioneAsincrona() {
 
 // Consumo di promesse
 miaFunzioneAsincrona().then(() => {
-  console.log('L\'operazione schedulata 2 secondi fa è terminata con successo');
+console.log(`L'operazione schedulata 2 secondi fa è terminata con successo`);
 }, () => {
-  console.log('L\'operazione schedulata 2 secondi fa è fallita');
+console.log(`L'operazione schedulata 2 secondi fa è fallita`);
 });
 ```
 
@@ -407,7 +405,7 @@ const marco = {
 
 ```
 function presentati(nome = 'Mario Rossi') {
-  console.log('Ciao sono ' + nome);
+  console.log(`Ciao sono ${nome}`);
 }
 presentati(); 'Ciao sono Mario Rossi';
 presentati('Marco'); 'Ciao sono Marco';
@@ -548,8 +546,8 @@ candidatura alla cancellazione di questi oggetti da parte del garbage collector.
 
 In ECMAScript 6 è possibile separare il codice in più moduli, intesi come file
 separati in cui tutte le definizioni sono di default private ma possono essere
-condivise qualora esplicitamente _esportate_ dal file a cui appartengono ed
-_importate_ nel file di destinazione. Allo scopo, sono state introdotte le
+condivise qualora esplicitamente esportate dal file a cui appartengono ed
+importate in un file di destinazione. Allo scopo, sono state introdotte le
 parole chiave `import` ed `export`.
 
 Esempio di esportazione:
