@@ -3,15 +3,11 @@
 ## Sommario
 
 Lo scopo di questa guida è quello di presentare in maniera chiara e breve alcune
-delle funzionalità più importanti introdotte con ECMAScript 6. In particolare il
-focus è sulle funzionalità di uso più comune.
+delle funzionalità più rilevanti introdotte da ECMAScript 6.
 
-Questa guida è inoltre rivolta a lettori che abbiano già esperienza di sviluppo
-JavaScript.
-
-Quasi tutte le funzionalità di ECMAScript 6 possono già essere provate sulla
-maggioranza dei browser (o su [Node](https://nodejs.org/)) in ultima versione.
-In alternativa è possibile utilizzare [Babel](https://babeljs.io/).
+Quasi tutte queste funzionalità sono testabili sulla maggioranza dei browser (o
+su [Node](https://nodejs.org/)) in ultima versione. In alternativa è possibile
+utilizzare [Babel](https://babeljs.io/).
 
 ## Indice
 
