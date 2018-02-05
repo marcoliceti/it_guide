@@ -55,9 +55,6 @@ Le variabili `const` devono essere inizializzate:
 const x; // Errore
 ```
 
-Remember that assigning an object to a `const` variable doesn't magically make
-it immutable:
-
 È bene ricordare che assegnare un oggetto a una variabile `const` non rende
 l'oggetto magicamente immutabile:
 
