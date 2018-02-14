@@ -1,4 +1,4 @@
-# ECMAScript 6
+# TypeScript
 
 ## Sommario
 
