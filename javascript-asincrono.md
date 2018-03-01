@@ -81,8 +81,7 @@ fs.readFile('/home/marco/Desktop/esempio.txt', 'utf8', function () {
 
 In questo esempio la funzione `readFile` del modulo `fs` di Node.js, che
 permette di leggere un file, prende una callback come ultimo parametro (che per
-altro è una convenzione piuttosto comune a quasi fra le API asincrone
-JavaScript).
+altro è una convenzione piuttosto comune a fra le API asincrone JavaScript).
 
 La callback passata ad un'API asincrona può avere a sua volta dei parametri che
 rappresentano l'esito dell'operazione:
@@ -183,8 +182,8 @@ promessa.then(function (dati) {
 
 Rispetto all'approccio "tradizionale", sono già evidenti due miglioramenti:
 
-* possibilità di rimandare la definizione delle callback
-* gestione separata del successo e del fallimento
+* la richiesta della promessa e la definizione delle callback sono indipendenti
+* così come sono indipendenti la gestione del successo e quella del fallimento
 
 Le promesse, poi, permettono di risolvere la "Pyramid of Doom" attraverso un
 meccanismo di concatenazione basato su singola callback e in cui ogni callback
