@@ -497,14 +497,7 @@ var cloneDiMarco = { nome: 'Marco' };
 cloneDiMarco instanceof Persona; // false
 ```
 
-Tramite costruttori e prototipi è possibile riprodurre in JavaScript dei
-meccanismi di ereditarietà simili a quelli di altri linguaggi:
-
-```
-function Persona() {}
-function Sviluppatore() {}
-Sviluppatore.prototype = new Persona();
-var marco = new Sviluppatore();
-marco instanceof Sviluppatore; // true
-marco instanceof Persona; // true
-```
+Con questo si concude questa introduzione a JavaScript. Per approfondire
+ulteriormente i concetti appresi si consiglia di iniziare un piccolo progetto
+con requisiti verosimili. Inoltre in questo spazio verranno pubblicate altre
+guide, perciò rimanete sintonizzati :D
