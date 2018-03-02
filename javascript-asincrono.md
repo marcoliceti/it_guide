@@ -439,107 +439,119 @@ I generator possono quindi essere utilizzati per scrivere codice in grado di
 all'interno del generator facendo lo `yield` di una promessa e termina quando
 da una delle callback della promessa viene chiamato `next` o `throw`. Esempio:
 
-```
-function* example() {
-  try {
-    var result = yield makeMeAPromise();
-    console.log(result);
-  } catch (error) {
-    console.log(error);
-  }
-}
 
-var iterator = example();
-var promise = iterator.next();
-promise.then(function (result) {
-  iterator.next(result);
-}, function (error) {
-  iterator.throw(error);
-});
-```
-
-The code in the previous example may be refactored into this:
 
 ```
-function magicFunction(aGenerator) {
-  var iterator = aGenerator();
-  var promise = iterator.next();
-  promise.then(function (result) {
-    iterator.next(result);
-  }, function (error) {
-    iterator.throw(error);
+function funzioneMagica(unGenerator) {
+  var iteratore = unGenerator();
+  var promessa = iteratore.next();
+  promessa.then(function (risultato) {
+    iteratore.next(risultato);
+  }, function (errore) {
+    iteratore.throw(errore);
   });
 }
 
-magicFunction(function* () {
+funzioneMagica(function* () {
   try {
-    var result = yield makeMeAPromise();
-    console.log(result);
-  } catch (error) {
-    console.log(error);
+    var risultato = yield fammiUnaPromessa();
+    console.log(risultato);
+  } catch (errore) {
+    console.log(errore);
   }
 });
 ```
 
-`magicFunction` can be extended in order to support waiting for multiple
-promises:
+Estendendo opportunamente `funzioneMagica` possiamo arrivare poi a scrivere
+generator che "attendono" più promesse:
 
 ```
-magicFunction(function* () {
+function funzioneMagica(unGenerator) {
+  var iteratore = unGenerator();
+  var promessa = iteratore.next();
+  promessa.then(function (risultato) {
+    iteratore.next(risultato);
+  }, function (errore) {
+    iteratore.throw(errore);
+  });
+}
+
+funzioneMagica(function* () {
   try {
-    var x = yield promiseOne();
-    var y = yield promiseTwo();
-    var z = yield promiseThree();
-    console.log(x + y + z);
-  } catch (error) {
-    console.log(error);
+    var risultato = yield fammiUnaPromessa();
+    console.log(risultato);
+  } catch (errore) {
+    console.log(errore);
   }
 });
 ```
 
-Now, if you look at the genarator's body you'll notice that it's starting to
-look like plain old synchronous code. From the genarator's perspective there's
-no difference between asynchronous values waited with `yield` and values
-obtained through a synchronous function. In other words, you don't need anymore
-callbacks or complex promise compositions: you just write "regular" code except
-that you put `yield` before promises.
-
-Of course this works only if you have a suitable `magicFunction`. You can find a
-sample implementation [here](https://www.promisejs.org/generators/) and of
-course you can make your own. In ECMAScript 2017 you won't need to do that: the
-generator based pattern seen in this section is natively supported with
-dedicated syntax. Specifically, you can declare `async` functions and use the
-`await` keyword inside them:
+Estendendo opportunamente `funzioneMagica` possiamo arrivare a scrivere
+generator che "attendono" più promesse:
 
 ```
-async function example() {
+funzioneMagica(function* () {
   try {
-    var x = await promiseOne();
-    var y = await promiseTwo();
-    var z = await promiseThree();
+    var x = yield promessaUno();
+    var y = yield promessaDue();
+    var z = yield promessaTre();
     console.log(x + y + z);
-  } catch (error) {
-    console.log(error);
+  } catch (errore) {
+    console.log(errore);
+  }
+});
+```
+
+Ora, se focalizziamo l'attenzione sul corpo del generator ci rendiamo conto che
+questo modo di scrivere il codice fa sembrare sincrono il codice asincrono. In
+particolare dal punto di vista del generator i "valori asincroni" attesi con lo
+`yield` di una promessa sono del tutto equivalenti a quelli sincroni / ottenuti
+immediatamente con una normale funzione. Di conseguenza non serve scrivere più
+alcuna callback né sbizzarrirsi nella composizione di promesse: è sufficiente
+scrivere codice lo stesso codice che si sarebbe scritto con API sincrone, avendo
+cura di premettere `yield` alle invocazioni che restituiscono promesse.
+
+Naturalmente queste affermazioni presuppongono la disponibilità di codice in
+grado di gestire correttamente le promesse su cui viene invocato `yield`. Negli
+esempi precedenti abbiamo visto un'implementazione (`funzioneMagica`) che andava
+bene per uno scenario estremamente semplificato, ma con un po' di fantasia e
+bravura è possibile scriverne una versione in grado di coprire un numero non
+prefissato di promesse e di supportare la parametrizzazione del generator. Si
+veda ad esempio l'implementazione disponibile a
+[questo indirizzo](https://www.promisejs.org/generators/).
+
+Ora, il pattern descritto in questa sezione si chiama "async / await" e in
+ECMAScript 2017 è implementato nativamente, per altro anche attraverso sintassi
+dedicata. In particolare una funzione può essere marcata come `async` e
+attendere un numero generico di promesse tramite parola chiave `await`:
+
+```
+async function esempio() {
+  try {
+    var x = await promessaUno();
+    var y = await promessaDue();
+    var z = await promessaTre();
+    console.log(x + y + z);
+  } catch (errore) {
+    console.log(errore);
   }
 }
 ```
 
-This will be internally translated into something like:
+Tale codice sarà internamente convertito in qualcosa di simile a:
 
 ```
 async(function* () {
   try {
-    var x = yield promiseOne();
-    var y = yield promiseTwo();
-    var z = yield promiseThree();
+    var x = yield promessaUno();
+    var y = yield promessaDue();
+    var z = yield promessaTre();
     console.log(x + y + z);
-  } catch (error) {
-    console.log(error);
+  } catch (errore) {
+    console.log(errore);
   }
 });
 ```
 
-Where `async` is a function similar to the `magicFunction` seen in the previous
-examples.
-
-This conclude our asynchronous JavaScript overview ;)
+... e con questo si chiude la nostra panoramica sulla programmazione asincrona
+in JavaScript! ;)
