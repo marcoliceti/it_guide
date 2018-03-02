@@ -104,23 +104,6 @@ proprietà `length` permette di ottenere la lunghezza dell'array:
 [ 'a', 'b', 'c' ].length; // 3
 ```
 
-Gli array possono essere inoltre modificati utilizzando alcuni metodi appositi,
-es.:
-
-```
-var lettere = [ 'a', 'b', 'c' ];
-lettere.push('d');
-console.log(lettere); // [ 'a', 'b', 'c', 'd' ]
-lettere = lettere.concat([ 'e', 'f', 'g' ]);
-console.log(lettere); // [ 'a', 'b', 'c', 'd', 'e', 'f', 'g' ];
-lettere.pop();
-console.log(lettere); // [ 'a', 'b', 'c', 'd', 'e', 'f' ];
-...
-```
-
-**Nota:** Per una panoramica completa sui metodi degli array si rimanda ad una
-bella ricerca Google ;)
-
 ## Selezione
 
 Sintassi simile a quella degli altri linugaggi ispirati al C:
@@ -278,7 +261,7 @@ function funzioneEsterna() {
   var n = 7;
   function funzioneAnnidata() {
     // qui la variabile n è ancora accessibile
-    function funzione ancoraPiuAnnidata() {
+    function funzioneAncoraPiuAnnidata() {
       // anche qui la variabile n è ancora accessibile
     }
   }

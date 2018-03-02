@@ -17,7 +17,7 @@ avanzate".
 
 * [Background](#background)
 * [Callback](#callback)
-* [Promesse](#array)
+* [Promesse](#promesse)
 * [Generator](#generator)
 * [Async await](#async-await)
 
@@ -440,92 +440,106 @@ all'interno del generator facendo lo `yield` di una promessa e termina quando
 da una delle callback della promessa viene chiamato `next` o `throw`. Esempio:
 
 ```
-function funzioneMagica(unGenerator) {
-  var iteratore = unGenerator();
-  var promessa = iteratore.next();
-  promessa.then(function (risultato) {
-    iteratore.next(risultato);
-  }, function (errore) {
-    iteratore.throw(errore);
+function* example() {
+  try {
+    var result = yield makeMeAPromise();
+    console.log(result);
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+var iterator = example();
+var promise = iterator.next();
+promise.then(function (result) {
+  iterator.next(result);
+}, function (error) {
+  iterator.throw(error);
+});
+```
+
+The code in the previous example may be refactored into this:
+
+```
+function magicFunction(aGenerator) {
+  var iterator = aGenerator();
+  var promise = iterator.next();
+  promise.then(function (result) {
+    iterator.next(result);
+  }, function (error) {
+    iterator.throw(error);
   });
 }
 
-funzioneMagica(function* () {
+magicFunction(function* () {
   try {
-    var risultato = yield fammiUnaPromessa();
-    console.log(risultato);
-  } catch (errore) {
-    console.log(errore);
+    var result = yield makeMeAPromise();
+    console.log(result);
+  } catch (error) {
+    console.log(error);
   }
 });
 ```
 
-Estendendo opportunamente `funzioneMagica` possiamo arrivare a scrivere
-generator che "attendono" più promesse:
+`magicFunction` can be extended in order to support waiting for multiple
+promises:
 
 ```
-funzioneMagica(function* () {
+magicFunction(function* () {
   try {
-    var x = yield promessaUno();
-    var y = yield promessaDue();
-    var z = yield promessaTre();
+    var x = yield promiseOne();
+    var y = yield promiseTwo();
+    var z = yield promiseThree();
     console.log(x + y + z);
-  } catch (errore) {
-    console.log(errore);
+  } catch (error) {
+    console.log(error);
   }
 });
 ```
 
-Ora, se focalizziamo l'attenzione sul corpo del generator ci rendiamo conto che
-questo modo di scrivere il codice fa sembrare sincrono il codice asincrono. In
-particolare dal punto di vista del generator i "valori asincroni" attesi con lo
-`yield` di una promessa sono del tutto equivalenti a quelli sincroni / ottenuti
-immediatamente con una normale funzione. Di conseguenza non serve scrivere più
-alcuna callback né sbizzarrirsi nella composizione di promesse: è sufficiente
-scrivere codice lo stesso codice che si sarebbe scritto con API sincrone, avendo
-cura di premettere `yield` alle invocazioni che restituiscono promesse.
+Now, if you look at the genarator's body you'll notice that it's starting to
+look like plain old synchronous code. From the genarator's perspective there's
+no difference between asynchronous values waited with `yield` and values
+obtained through a synchronous function. In other words, you don't need anymore
+callbacks or complex promise compositions: you just write "regular" code except
+that you put `yield` before promises.
 
-Naturalmente queste affermazioni presuppongono la disponibilità di codice in
-grado di gestire correttamente le promesse su cui viene invocato `yield`. Negli
-esempi precedenti abbiamo visto un'implementazione (`funzioneMagica`) che andava
-bene per uno scenario estremamente semplificato, ma con un po' di fantasia e
-bravura è possibile scriverne una versione in grado di coprire un numero non
-prefissato di promesse e di supportare la parametrizzazione del generator. Si
-veda ad esempio l'implementazione disponibile a
-[questo indirizzo](https://www.promisejs.org/generators/).
-
-Ora, il pattern descritto in questa sezione si chiama "async / await" e in
-ECMAScript 2017 è implementato nativamente, per altro anche attraverso sintassi
-dedicata. In particolare una funzione può essere marcata come `async` e
-attendere un numero generico di promesse tramite parola chiave `await`:
+Of course this works only if you have a suitable `magicFunction`. You can find a
+sample implementation [here](https://www.promisejs.org/generators/) and of
+course you can make your own. In ECMAScript 2017 you won't need to do that: the
+generator based pattern seen in this section is natively supported with
+dedicated syntax. Specifically, you can declare `async` functions and use the
+`await` keyword inside them:
 
 ```
-async function esempio() {
+async function example() {
   try {
-    var x = await promessaUno();
-    var y = await promessaDue();
-    var z = await promessaTre();
+    var x = await promiseOne();
+    var y = await promiseTwo();
+    var z = await promiseThree();
     console.log(x + y + z);
-  } catch (errore) {
-    console.log(errore);
+  } catch (error) {
+    console.log(error);
   }
 }
 ```
 
-Tale codice sarà internamente convertito in qualcosa di simile a:
+This will be internally translated into something like:
 
 ```
 async(function* () {
   try {
-    var x = yield promessaUno();
-    var y = yield promessaDue();
-    var z = yield promessaTre();
+    var x = yield promiseOne();
+    var y = yield promiseTwo();
+    var z = yield promiseThree();
     console.log(x + y + z);
-  } catch (errore) {
-    console.log(errore);
+  } catch (error) {
+    console.log(error);
   }
 });
 ```
 
-... e con questo si chiude la nostra panoramica sulla programmazione asincrona
-in JavaScript! ;)
+Where `async` is a function similar to the `magicFunction` seen in the previous
+examples.
+
+This conclude our asynchronous JavaScript overview ;)
